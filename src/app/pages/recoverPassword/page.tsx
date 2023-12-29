@@ -34,13 +34,19 @@ export default function RecoverPassword() {
           Ingresa tu correo electrónico para buscar tu cuenta.
         </h2>
         <form onSubmit={handleSubmit(submitData)}>
-          <Input
-            type="email"
-            placeholder="Correo electrónico"
-            {...register("correo")}
-            autoComplete="off"
-            className="w-[26rem] mt-4"
-          />
+          <div className="flex flex-col">
+            <Input
+              type="email"
+              placeholder="Correo electrónico"
+              {...register("correo")}
+              autoComplete="off"
+              className="w-[26rem] mt-4"
+            />
+            {errors.correo && (
+              <span className="text-red-500">{errors.correo.message}</span>
+            )}
+          </div>
+
           <div className="flex justify-evenly mt-6">
             <Button
               text="Cancelar"
