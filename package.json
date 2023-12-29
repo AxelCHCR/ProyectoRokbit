@@ -10,6 +10,7 @@
     "back": "nodemon backend/connection.js"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -17,7 +18,9 @@
     "next": "14.0.4",
     "nodemon": "^3.0.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-hook-form": "^7.49.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",
