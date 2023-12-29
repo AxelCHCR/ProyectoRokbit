@@ -5,7 +5,7 @@ const portDefault = 4000;
 const app = express();
 const port = process.env.PORT || portDefault;
 app.get("/", (req, res) => {
-    res.send("API for Duende Maquillista");
+    res.send("API for Rokbit");
   });
-//mongoose.connect("");
+mongoose.connect();
 app.listen(port, () => console.log(`Server running on port ${port}`));
