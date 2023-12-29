@@ -1,8 +1,7 @@
 import React from "react";
 
-interface ButtonProps {
+interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text: string;
-  onClick?: () => void;
   className?: string;
 }
 
