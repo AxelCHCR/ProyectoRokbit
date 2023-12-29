@@ -13,7 +13,7 @@ class UserController{
         this.password = userInfo.password;
         this.role = userInfo.role;  
     }
-    private login(){
+    private register(){
         
     }
 }

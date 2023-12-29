@@ -5,8 +5,8 @@ const database = Database.getInstance();
 
 const router = express.Router();
 
-//create user
-router.post("/createUser", async (req, res) => {
+//Register an user
+router.post("/users", async (req, res) => {
   await database.connect();
   const user = userSchema(req.body);
   user
