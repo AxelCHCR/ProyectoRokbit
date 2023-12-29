@@ -50,7 +50,7 @@ export default function RecoverPassword() {
           <div className="flex justify-evenly mt-6">
             <Button
               text="Cancelar"
-              className="bg-custom-light-gray text-gray-600 hover:bg-custom-dark-gray"
+              className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray"
             />
             <Button text="Aceptar" type="submit" />
           </div>
