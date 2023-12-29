@@ -18,26 +18,32 @@ type formData = {
 export default function Register() {
   const registrationSchema: ZodType<formData> = z
     .object({
-      nombre: z.string().min(1, "El nombre es requerido"),
-      apellido: z.string().min(1, "El apellido es requerido"),
-      correo: z.string().email("Correo electrónico inválido"),
+      nombre: z.string().min(1, { message: "El nombre es requerido" }),
+      apellido: z.string().min(1, { message: "El apellido es requerido" }),
+      correo: z.string().email({ message: "Correo electrónico inválido" }),
       contrasena: z
         .string()
-        .min(8, "La contraseña debe tener al menos 8 caracteres"),
+        .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
       confirmarContrasena: z
         .string()
-        .min(8, "La confirmación de contraseña es requerida"),
+        .min(8, { message: "La confirmación de contraseña es requerida" }),
       edad: z
         .number({ invalid_type_error: "La edad es requerida" })
-        .min(0, "La edad no puede ser negativa")
-        .max(120, "La edad máxima es 100"),
-
-      rol: z.string().min(1, "El rol es requerido"),
+        .min(0, { message: "La edad no puede ser negativa" })
+        .max(120, { message: "La edad máxima es 100" }),
+      rol: z.string().min(1, { message: "El rol es requerido" }),
     })
     .refine((data) => data.contrasena === data.confirmarContrasena, {
       message: "Las contraseñas deben coincidir",
       path: ["confirmarContrasena"],
-    });
+    })
+    .refine(
+      (data) => /[A-Z]/.test(data.contrasena) && /[0-9]/.test(data.contrasena),
+      {
+        message: "Requiere al menos una mayúscula y un número.",
+        path: ["contrasena"],
+      }
+    );
 
   const {
     register,
