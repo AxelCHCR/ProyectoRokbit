@@ -12,7 +12,7 @@ router.post("/users", async (req, res) => {
   user
     .save()
     .then((data) => res.json(data))
-    .catch((error) => res.json({ message: error }));
+    .catch((error) => res.send({ message: error }));
 });
 
 module.exports = router;

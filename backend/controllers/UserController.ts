@@ -1,19 +1,43 @@
 import axios from "axios";
-class UserController{
-    private name: string;
-    private lastName: string;
-    private email: string;
-    private password: string;
-    private role: string;
+import { any } from "zod";
+class UserController {
+    /*public name: string;
+    public lastName: string;
+    public email: string;
+    public password: string;
+    public age: string;
+    public role: string;*/
     //Make the constructor method
-    constructor(userInfo: object){
-        this.name = userInfo.name;
-        this.lastName = userInfo.lastName;
-        this.email = userInfo.email;
-        this.password = userInfo.password;
-        this.role = userInfo.role;  
+    /*constructor(userInfo: any) {
+        this.name = userInfo.nombre;
+        this.lastName = userInfo.apellido;
+        this.email = userInfo.correo;
+        this.password = userInfo.contrasena;
+        this.age = userInfo.edad;
+        this.role = userInfo.rol;
+    }*/
+    async register(route: string, data: any) {
+        const response = await axios.post(route, data);  
+        console.log("error: ", response);
+        return response;
     }
-    private register(){
-        
-    }
+    /*public getData() {
+        console.log(
+            this.name,
+            this.lastName,
+            this.email,
+            this.password,
+            this.age,
+            this.role
+        )
+        return {
+            name: this.name,
+            lastName: this.lastName,
+            email: this.email,
+            password: this.password,
+            age: this.age,
+            role: this.role
+        }
+    }*/
 }
+export default new UserController();
