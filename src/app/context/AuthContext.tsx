@@ -7,7 +7,6 @@ import {
   signOut,
 } from 'firebase/auth'
 import { auth } from "../../../config/firebase";
-// import { useRouter } from "next/router";
 
 const AuthContext = createContext<any>({});
 export const useAuth = () => useContext(AuthContext);
