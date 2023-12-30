@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 class Database{
     static instance;
     constructor(){
@@ -11,7 +13,7 @@ class Database{
         return Database.instance;
     }
     connect(){
-        mongoose.connect("mongodb+srv://axelchavesr:tGfpOZBhreznmEQU@cluster0.jqlfuzl.mongodb.net/?retryWrites=true&w=majority")
+        mongoose.connect(process.env.MONGODB_URI)
         .then(() => console.log("MongoDB connected"))
         .catch(err => console.log(err));
     }
