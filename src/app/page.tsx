@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 import Link from "next/link";
+import { useAuth } from "./context/AuthContext";
 
 type formData = {
   email: string;
@@ -28,8 +29,14 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const submitData = (data: formData) => {
-    console.log(data);
+  const { user, login } = useAuth();
+
+  const submitData = async (data: formData) => {
+    try {
+      await login(data.email, data.password);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
