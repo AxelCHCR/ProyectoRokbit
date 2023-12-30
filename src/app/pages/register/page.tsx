@@ -67,7 +67,7 @@ export default function Register() {
     console.log("otra data: ", parsedData);
     //const user = new UserController();
     //console.log("la data: ", user.getData());
-    const response = await userController.register("http://localhost:4000/api/users", data.nombre);
+    const response = await userController.register("http://localhost:4000/api/users", parsedData);
     console.log("datos: ", response);
   };
 
