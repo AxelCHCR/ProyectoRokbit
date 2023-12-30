@@ -1,11 +1,11 @@
 import axios from "axios";
 class UserController {
-  /*public name: string;
+  public name: string;
     public lastName: string;
     public email: string;
     public password: string;
     public age: string;
-    public role: string;*/
+    public role: string;
   //Make the constructor method
   /*constructor(userInfo: any) {
         this.name = userInfo.nombre;
