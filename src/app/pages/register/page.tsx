@@ -1,11 +1,12 @@
 "use client";
+import React from "react";
 import Button from "@/app/components/button";
 import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 import userController from "../../../../backend/controllers/UserController";
-import axios from "axios";
+import { useAuth } from "@/app/context/AuthContext";
 
 type formData = {
   nombre: string;
@@ -55,6 +56,8 @@ export default function Register() {
     resolver: zodResolver(registrationSchema),
   });
 
+  const { user, signup } = useAuth();
+
   const submitData = async (data: formData) => {
     let parsedData = {
       name: data.nombre,
@@ -68,7 +71,13 @@ export default function Register() {
     //const user = new UserController();
     //console.log("la data: ", user.getData());
     const response = await userController.register("http://localhost:4000/api/users", parsedData);
-    console.log("datos: ", response);
+    if (response) {
+      // await userController.authenticate(parsedData.email, parsedData.password);
+      await signup(parsedData.email, parsedData.password);
+      console.log("funciona");
+    } else {
+      console.log("error");
+    }
   };
 
   return (
