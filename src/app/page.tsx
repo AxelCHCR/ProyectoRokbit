@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type formData = {
   email: string;
@@ -30,10 +31,13 @@ export default function Login() {
   });
 
   const { user, login } = useAuth();
+  console.log(user);
+  const router = useRouter();
 
   const submitData = async (data: formData) => {
     try {
       await login(data.email, data.password);
+      router.push("./pages/dashboard");
     } catch (error) {
       console.log(error);
     }
