@@ -17,8 +17,9 @@ class UserController {
         this.role = userInfo.rol;
     }*/
     async register(route: string, data: any) {
-        const response = await axios.post(route, data);  
-        console.log("error: ", response);
+        const response = await axios.post(route, data)
+        .then((res: any) => {console.log("exitoso: ", res)})
+        .catch((error) => {console.log("error: ", error)});  
         return response;
     }
     /*public getData() {

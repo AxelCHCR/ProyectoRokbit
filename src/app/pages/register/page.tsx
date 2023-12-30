@@ -4,7 +4,7 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
-import UserController from "../../../../backend/controllers/UserController";
+import userController from "../../../../backend/controllers/UserController";
 import axios from "axios";
 
 type formData = {
@@ -56,7 +56,7 @@ export default function Register() {
   });
 
   const submitData = async (data: formData) => {
-    const parsedData = {
+    let parsedData = {
       name: data.nombre,
       lastName: data.apellido,
       email: data.correo,
@@ -67,7 +67,7 @@ export default function Register() {
     console.log("otra data: ", parsedData);
     //const user = new UserController();
     //console.log("la data: ", user.getData());
-    const response = await axios.post("http://localhost:4000/api/users", parsedData);
+    const response = await userController.register("http://localhost:4000/api/users", data.nombre);
     console.log("datos: ", response);
   };
 
