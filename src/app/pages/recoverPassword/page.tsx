@@ -4,6 +4,8 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type formData = {
   correo: string;
@@ -22,8 +24,19 @@ export default function RecoverPassword() {
     resolver: zodResolver(recoverPasswordSchema),
   });
 
-  const submitData = (data: formData) => {
-    console.log(data);
+  const { resetPassword } = useAuth();
+  const router = useRouter();
+
+  const submitData = async (data: formData) => {
+    console.log(data.correo);
+    try {
+      await resetPassword(data.correo);
+      //Colocar el popup de que se envió el correo
+      alert("Revisa tu correo electrónico");
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -51,6 +64,8 @@ export default function RecoverPassword() {
             <Button
               text="Cancelar"
               className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray"
+              type="button"
+              onClick={() => router.push("/")}
             />
             <Button text="Aceptar" type="submit" />
           </div>
