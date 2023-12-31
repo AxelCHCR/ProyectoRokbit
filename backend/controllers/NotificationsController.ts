@@ -1,7 +1,7 @@
 import axios from 'axios';
 class NotificationsController{
-    async updateNotificationsSettings(userId: string, status: boolean, frequency: string)
+    async updateNotificationsSettings(updateUserRoute: string,createNotificationRoute: String, userId: String, status: Boolean, frequency: String)
     {
-
+        const response = await axios.put(updateUserRoute, userId)
     }
 }
