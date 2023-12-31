@@ -38,7 +38,7 @@ export default function Register() {
     "/static/images/avatar/1.jpg"
   );
 
-  const handleImageChange = (event) => {
+  const handleImageChange = (event:any) => {
     const file = event.target.files[0];
     if (file) {
       setProfileImage(URL.createObjectURL(file));
