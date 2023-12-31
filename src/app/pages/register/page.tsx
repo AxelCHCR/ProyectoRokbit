@@ -65,12 +65,15 @@ export default function Register() {
       email: data.correo,
       password: data.contrasena,
       age: data.edad,
-      role: data.rol
-    }
+      role: data.rol,
+    };
     console.log("otra data: ", parsedData);
     //const user = new UserController();
     //console.log("la data: ", user.getData());
-    const response = await userController.register("http://localhost:4000/api/users", parsedData);
+    const response = await userController.register(
+      "http://localhost:4000/api/users",
+      parsedData
+    );
     if (response) {
       // await userController.authenticate(parsedData.email, parsedData.password);
       await signup(parsedData.email, parsedData.password);
@@ -184,7 +187,11 @@ export default function Register() {
             </div>
           </div>
           <div className="text-center">
-            <Button text="Registrarse" className="mt-7" type="submit" />
+            <Button
+              text="Registrarse"
+              className="mt-7 w-36 h-10 text-white"
+              type="submit"
+            />
           </div>
         </form>
       </div>
