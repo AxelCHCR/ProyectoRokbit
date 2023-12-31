@@ -1,33 +1,28 @@
 "use client";
-// import type { Metadata } from "next";
 import "./globals.css";
 import { poppins } from "@/utils/fonts";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/protected";
 import { usePathname } from "next/navigation";
 
-// export const metadata: Metadata = {
-//   title: "Colibri",
-// };
-
-const noAuthRequired = ["/", "/pages/register", "/pages/notifications", "/pages/userProfile"];
+const noAuthRequired = ["/", "/pages/register", "/pages/recoverPassword"];
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // const router = useRouter();
   const isAuthRequired = !noAuthRequired.includes(usePathname());
   return (
     <html lang="en">
       <body className={`${poppins}`}>
         <AuthContextProvider>
-          {isAuthRequired ? (
+          {/* {isAuthRequired ? (
             <ProtectedRoute>{children}</ProtectedRoute>
           ) : (
             children
-          )}
+          )} */}
+          {children}
         </AuthContextProvider>
       </body>
     </html>
