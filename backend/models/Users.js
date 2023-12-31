@@ -23,6 +23,11 @@ const usersSchema = mongoose.Schema({
     role: {
         type: String, 
         required: true,
-    }
+    },
+    allowNotifications:{
+        type: Boolean,
+        required: false
+    },
+
 });
 module.exports = mongoose.model("Users", usersSchema);
