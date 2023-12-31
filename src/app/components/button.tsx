@@ -6,9 +6,7 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
 }
 
 const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
-  const buttonClass = `rounded-xl bg-custom-blue w-40 h-12 font-poppins font-bold text-white hover:bg-custom-dark-blue ${
-    className || ""
-  }`;
+  const buttonClass = `rounded-xl bg-custom-blue  font-poppins font-bold hover:bg-custom-dark-blue ${className}`;
 
   return (
     <button className={buttonClass} onClick={onClick}>
