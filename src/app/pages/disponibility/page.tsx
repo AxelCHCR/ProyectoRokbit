@@ -1,22 +1,36 @@
 "use client";
-
+import React from "react";
 import Button from "@/app/components/button";
-import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z, ZodType } from "zod";
+import { z } from "zod";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Input from "@/app/components/inputs";
 
 type FormData = {
-  horas: number;
-  notificaciones: string;
+  notificaciones: "si" | "no";
+  lunes: boolean;
+  martes: boolean;
+  miercoles: boolean;
+  jueves: boolean;
+  viernes: boolean;
+  sabado: boolean;
+  domingo: boolean;
 };
 
-export default function notifications() {
-  const notificationsSchema: ZodType<FormData> = z.object({
-    horas: z.number().min(1, { message: "Debe ser al menos 1 hora" }),
+export default function Disponibility() {
+  const disponibilitySchema = z.object({
     notificaciones: z.enum(["si", "no"], {
       invalid_type_error: "Debe seleccionar una opción",
     }),
+    lunes: z.boolean().optional(),
+    martes: z.boolean().optional(),
+    miercoles: z.boolean().optional(),
+    jueves: z.boolean().optional(),
+    viernes: z.boolean().optional(),
+    sabado: z.boolean().optional(),
+    domingo: z.boolean().optional(),
   });
 
   const {
@@ -24,7 +38,7 @@ export default function notifications() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(notificationsSchema),
+    resolver: zodResolver(disponibilitySchema),
   });
 
   const submitData = (data: FormData) => {
@@ -36,7 +50,7 @@ export default function notifications() {
       <div>
         <h1 className="font-poppins font-bold text-4xl">Notificaciones</h1>
         <h2 className="font-poppins font-light text-base mt-12">
-          ¿Deseas recibir notificaciones?
+          ¿Deseas recibir invitaciones a reuniones?
         </h2>
         <form onSubmit={handleSubmit(submitData)}>
           <div className="flex items-center mt-4">
@@ -47,28 +61,38 @@ export default function notifications() {
             <Input type="radio" value="no" {...register("notificaciones")} />
             <label className="font-poppins font-light">No</label>
           </div>
+
           <h3 className="font-poppins font-light text-base mt-12">
-            ¿Cuánto antes desea recibir un recordatorio de la reunión?
+            Seleccione los días que desea recibir invitaciones
           </h3>
-          <div className="flex flex-col mt-6 items-center justify-center">
-            <Input
-              type="number"
-              placeholder="Horas"
-              className="w-48"
-              {...register("horas", { valueAsNumber: true })}
-              min={1}
-            />
-            {errors.horas && (
-              <span className="text-red-500">{errors.horas.message}</span>
-            )}
+
+          <div className="flex justify-start mb-4">
+            {["lunes", "martes", "miercoles", "jueves"].map((day) => (
+              <FormControlLabel
+                key={day}
+                control={<Checkbox {...register(day)} />}
+                label={day.charAt(0).toUpperCase() + day.slice(1)}
+              />
+            ))}
           </div>
+          <div className="flex justify-start">
+            {["viernes", "sabado", "domingo"].map((day) => (
+              <FormControlLabel
+                key={day}
+                control={<Checkbox {...register(day)} />}
+                label={day.charAt(0).toUpperCase() + day.slice(1)}
+                className=""
+              />
+            ))}
+          </div>
+
           <div className="flex justify-evenly mt-6">
             <Button
               text="Cancelar"
               className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray w-36 h-10"
             />
             <Button
-              text="Guadar cambios"
+              text="Guardar cambios"
               type="submit"
               className="w-40 h-10 text-white"
             />
