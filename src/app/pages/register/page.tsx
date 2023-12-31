@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 import userController from "../../../../backend/controllers/UserController";
 import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type formData = {
   nombre: string;
@@ -57,7 +58,7 @@ export default function Register() {
   });
 
   const { user, signup } = useAuth();
-
+  const router = useRouter();
   const submitData = async (data: formData) => {
     let parsedData = {
       name: data.nombre,
@@ -77,9 +78,10 @@ export default function Register() {
     if (response) {
       // await userController.authenticate(parsedData.email, parsedData.password);
       await signup(parsedData.email, parsedData.password);
-      console.log("funciona");
+      alert("Se registró correctamente.");
+      router.push("/");
     } else {
-      console.log("error");
+      console.log("Ocurrió un error al registrarse.");
     }
   };
 
