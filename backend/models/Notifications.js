@@ -16,5 +16,9 @@ const NotificationsSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    frecuency:{ 
+        type: Number,
+        required: true,
+    }
 });
 module.exports = mongoose.model("Notifications", NotificationsSchema);

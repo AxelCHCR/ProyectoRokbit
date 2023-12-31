@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 //   title: "Colibri",
 // };
 
-const noAuthRequired = ["/", "/pages/register", "/pages/userProfile"];
+const noAuthRequired = ["/", "/pages/register", "/pages/notifications", "/pages/userProfile"];
 
 export default function RootLayout({
   children,

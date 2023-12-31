@@ -14,7 +14,7 @@ const usersSchema = mongoose.Schema({
     },
     password:{
         type: String,
-        required: true,
+        required: false,
     },
     age:{
         type: String,
@@ -23,6 +23,11 @@ const usersSchema = mongoose.Schema({
     role: {
         type: String, 
         required: true,
-    }
+    },
+    allowNotifications:{
+        type: Boolean,
+        required: false
+    },
+
 });
 module.exports = mongoose.model("Users", usersSchema);

@@ -14,5 +14,14 @@ router.post("/users", async (req, res) => {
     .then((data) => res.json(data))
     .catch((error) => res.send({ message: error }));
 });
+router.put("/userNotificationStatus/:id", async (req, res) => {
+  await database.connect();
+  const { id } = req.params;
+  const {allowNotifications} = req.body;
+
+  userSchema.updateOne({_id: id}, {$set: {allowNotifications}})
+  .then((data) => res.json(data))
+  .catch((error) => res.send({ message: error }));
+});
 
 module.exports = router;
