@@ -17,11 +17,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins}`}>
         <AuthContextProvider>
-          {isAuthRequired ? (
+          {/* {isAuthRequired ? (
             <ProtectedRoute>{children}</ProtectedRoute>
           ) : (
             children
-          )}
+          )} */}
+          {children}
         </AuthContextProvider>
       </body>
     </html>
