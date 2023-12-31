@@ -5,13 +5,14 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
-
+import { useAuth } from "../../context/AuthContext";
 type FormData = {
   horas: number;
   notificaciones: string;
 };
 
 export default function notifications() {
+  const {user} = useAuth();
   const notificationsSchema: ZodType<FormData> = z.object({
     horas: z.number().min(1, { message: "Debe ser al menos 1 hora" }),
     notificaciones: z.enum(["si", "no"], {
@@ -28,7 +29,8 @@ export default function notifications() {
   });
 
   const submitData = (data: FormData) => {
-    console.log(data);
+
+    console.log(user);
   };
 
   return (
@@ -55,7 +57,7 @@ export default function notifications() {
               type="number"
               placeholder="Horas"
               className="w-48"
-              {...register("horas")}
+              {...register("horas", { valueAsNumber: true })}
               min={1}
             />
             {errors.horas && (

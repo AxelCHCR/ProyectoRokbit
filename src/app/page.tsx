@@ -30,7 +30,7 @@ export default function Login() {
   });
 
   const { user, login } = useAuth();
-  console.log(user);
+  console.log("acá: ",user);
   const router = useRouter();
 
   const submitData = async (data: formData) => {
