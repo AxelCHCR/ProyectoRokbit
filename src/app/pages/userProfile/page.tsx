@@ -9,6 +9,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+
 type formData = {
   nombre: string;
   apellido: string;
@@ -34,11 +37,25 @@ export default function Register() {
     resolver: zodResolver(profileSchema),
   });
 
+  const { user, resetPassword, changeEmail } = useAuth();
+  const router = useRouter();
+
+  const changePassword = async () => {
+    try {
+      await resetPassword(user.email);
+      //Colocar el popup de que se envió el correo
+      alert("Revisa tu correo electrónico");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const [profileImage, setProfileImage] = useState(
     "/static/images/avatar/1.jpg"
   );
 
-  const handleImageChange = (event:any) => {
+  const handleImageChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {
       setProfileImage(URL.createObjectURL(file));
@@ -48,6 +65,14 @@ export default function Register() {
   const submitData = async (data: formData) => {
     console.log(data);
     // Aquí puedes manejar la subida de datos del formulario junto con la imagen de perfil
+    if (data.correo !== user.email) {
+      try {
+        await changeEmail(data.correo);
+        console.log("Correo cambiado");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -135,7 +160,9 @@ export default function Register() {
               </div>
             </div>
           </div>
-          <div className="text-sm font-bold font-poppins mt-5 text-center">
+          <div className="text-sm font-bold font-poppins mt-5 text-center cursor-pointer"
+            onClick={changePassword}
+          >
             Cambiar contraseña
           </div>
           <div className="flex justify-evenly mt-6">
