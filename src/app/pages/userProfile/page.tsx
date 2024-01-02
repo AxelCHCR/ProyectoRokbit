@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Button from "@/app/components/button";
@@ -8,6 +8,7 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
+import UserController from "../../../../backend/controllers/UserController";
 
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -16,7 +17,7 @@ type formData = {
   nombre: string;
   apellido: string;
   correo: string;
-  edad: number;
+  edad: string;
   rol: string;
 };
 
@@ -25,9 +26,14 @@ export default function Register() {
     nombre: z.string({ invalid_type_error: "El nombre debe ser un texto" }),
     apellido: z.string({ invalid_type_error: "El apellido debe ser un texto" }),
     correo: z.string().email({ message: "Correo electrónico inválido" }),
-    edad: z.number({ invalid_type_error: "La edad debe ser un número" }),
+    edad: z.string().min(0, { message: "La edad no puede ser negativa" })
+      .max(120, { message: "La edad máxima es 100" }),
     rol: z.string({ invalid_type_error: "El rol debe ser un texto" }),
-  });
+  })
+    .refine((data) => {
+      const age = parseInt(data.edad);
+      return !isNaN(age);
+    }, { message: "La edad debe ser un número" });
 
   const {
     register,
@@ -39,6 +45,30 @@ export default function Register() {
 
   const { user, resetPassword, changeEmail } = useAuth();
   const router = useRouter();
+
+  const [userData, setUserData] = useState<formData>(
+    {
+      nombre: "",
+      apellido: "",
+      correo: "",
+      edad: "",
+      rol: "",
+    }
+  );
+  
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const response = await UserController.get("http://localhost:4000/api/getUser", { params: { email: user.email } });
+      setUserData({
+        nombre: response.name,
+        apellido: response.lastName,
+        correo: response.email,
+        edad: response.age,
+        rol: response.role,
+      });
+    };
+    fetchData();
+  }, []);
 
   const changePassword = async () => {
     try {
@@ -104,6 +134,7 @@ export default function Register() {
                   placeholder="Nombre"
                   {...register("nombre")}
                   autoComplete="off"
+                  defaultValue={userData.nombre}
                 />
                 {errors.nombre && (
                   <span className="text-red-500">{errors.nombre.message}</span>
@@ -114,6 +145,7 @@ export default function Register() {
                   placeholder="Apellido"
                   {...register("apellido")}
                   autoComplete="off"
+                  defaultValue={userData.apellido}
                 />
                 {errors.apellido && (
                   <span className="text-red-500">
@@ -129,6 +161,7 @@ export default function Register() {
                 className="w-[20.25rem]"
                 {...register("correo")}
                 autoComplete="off"
+                defaultValue={userData.correo}
               />
               {errors.correo && (
                 <span className="text-red-500">{errors.correo.message}</span>
@@ -141,6 +174,7 @@ export default function Register() {
                   placeholder="Edad"
                   {...register("edad", { valueAsNumber: true })}
                   autoComplete="off"
+                  defaultValue={userData.edad}
                   min={1}
                 />
                 {errors.edad && (
@@ -153,6 +187,7 @@ export default function Register() {
                   placeholder="Rol"
                   {...register("rol")}
                   autoComplete="off"
+                  defaultValue={userData.rol}
                 />
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
