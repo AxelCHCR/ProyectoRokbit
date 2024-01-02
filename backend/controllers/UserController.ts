@@ -31,6 +31,22 @@ class UserController {
       }
     }
 
+    async get(route: string, email: any) {
+      try {
+        const response = await axios.get(route, email);
+        if (response && response.data) {
+          console.log('Get info:', response.data);
+          return response.data;
+        } else {
+          console.log('No hay informacion');
+          return null;
+        }
+      } catch (error) {
+        console.log('Error:', error);
+        throw error;
+      }
+    }
+
   /*public getData() {
         console.log(
             this.name,

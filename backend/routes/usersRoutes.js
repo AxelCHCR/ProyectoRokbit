@@ -23,5 +23,13 @@ router.put("/userNotificationStatus/:id", async (req, res) => {
   .then((data) => res.json(data))
   .catch((error) => res.send({ message: error }));
 });
+router.get("/getUser", async (req, res) => {
+  await database.connect();
+  const { email } = req.query;
+  userSchema
+    .findOne({ email: email })
+    .then((data) => res.json(data))
+    .catch((error) => res.send({ message: error }));
+});
 
 module.exports = router;
