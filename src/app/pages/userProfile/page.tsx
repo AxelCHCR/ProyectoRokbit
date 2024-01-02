@@ -17,7 +17,7 @@ type formData = {
   nombre: string;
   apellido: string;
   correo: string;
-  edad: string;
+  edad: number;
   rol: string;
 };
 
@@ -26,14 +26,9 @@ export default function Register() {
     nombre: z.string({ invalid_type_error: "El nombre debe ser un texto" }),
     apellido: z.string({ invalid_type_error: "El apellido debe ser un texto" }),
     correo: z.string().email({ message: "Correo electrónico inválido" }),
-    edad: z.string().min(0, { message: "La edad no puede ser negativa" })
-      .max(120, { message: "La edad máxima es 100" }),
+    edad: z.number({ invalid_type_error: "La edad debe ser un número" }),
     rol: z.string({ invalid_type_error: "El rol debe ser un texto" }),
-  })
-    .refine((data) => {
-      const age = parseInt(data.edad);
-      return !isNaN(age);
-    }, { message: "La edad debe ser un número" });
+  });
 
   const {
     register,
@@ -43,7 +38,7 @@ export default function Register() {
     resolver: zodResolver(profileSchema),
   });
 
-  const { user, resetPassword, changeEmail } = useAuth();
+  const { user, resetPassword, emailReset } = useAuth();
   const router = useRouter();
 
   const [userData, setUserData] = useState<formData>(
@@ -51,7 +46,7 @@ export default function Register() {
       nombre: "",
       apellido: "",
       correo: "",
-      edad: "",
+      edad: 0,
       rol: "",
     }
   );
@@ -97,8 +92,11 @@ export default function Register() {
     // Aquí puedes manejar la subida de datos del formulario junto con la imagen de perfil
     if (data.correo !== user.email) {
       try {
-        await changeEmail(data.correo);
-        console.log("Correo cambiado");
+        const response = await emailReset(data.correo);
+        if (response === true) {
+          alert("Revisa tu correo electrónico");
+          // router.push("/");
+        }
       } catch (error) {
         console.log(error);
       }
