@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import Button from "@/app/components/button";
 import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,8 @@ import { z, ZodType } from "zod";
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
+import Popup from "./components/popups/popups";
+import PopUpRating from "./components/popups/popupsRating";
 
 type formData = {
   email: string;
@@ -14,6 +17,12 @@ type formData = {
 };
 
 export default function Login() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+
   const loginSchema: ZodType<formData> = z.object({
     email: z.string().email({ message: "Correo electrónico inválido" }),
     password: z
@@ -30,7 +39,7 @@ export default function Login() {
   });
 
   const { user, login } = useAuth();
-  console.log("acá: ",user);
+  console.log("acá: ", user);
   const router = useRouter();
 
   const submitData = async (data: formData) => {
@@ -96,12 +105,14 @@ export default function Login() {
           <div className="text-center">
             <Button
               text="Ingresar"
+              onClick={togglePopup}
               className="mt-7 w-36 h-10 text-white"
               type="submit"
             />
           </div>
         </form>
       </div>
+      <PopUpRating isOpen={isPopupOpen} onClose={togglePopup} />
     </div>
   );
 }
