@@ -24,9 +24,12 @@ export default function Home() {
   };
   
   return (
-    <><div>Main page</div><div>
+    <><div>Main page</div>
+    <div className='flex space-x-4'>
       <button onClick={handleSignOut}>Sign out</button>
       <button onClick={profile}>See Profile</button>
+      <button onClick={() => router.push("/pages/disponibility")}>Disponibility</button>
+      <button onClick={() => router.push("/pages/notifications")}>Notifications</button>
     </div></>
   );
 }
