@@ -66,28 +66,28 @@ export default function Register() {
       name: data.nombre,
       lastName: data.apellido,
       email: data.correo,
-      password: data.contrasena,
       age: data.edad,
       role: data.rol,
     };
-    console.log("otra data: ", parsedData);
+    // console.log("otra data: ", parsedData);
     const response = await userController.register(
       "http://localhost:4000/api/users",
       parsedData
     );
-    await ConfigurationsController.create(
-      "http://localhost:4000/api/availability",
-      { email: parsedData.email }
-    )
-    await ConfigurationsController.create(
-      "http://localhost:4000/api/frequency",
-      { email: parsedData.email }
-    )
     if (response) {
-      await signup(parsedData.email, parsedData.password);
+      await ConfigurationsController.create(
+        "http://localhost:4000/api/availability",
+        { email: parsedData.email }
+      )
+      await ConfigurationsController.create(
+        "http://localhost:4000/api/frequency",
+        { email: parsedData.email }
+      )
+      await signup(parsedData.email, data.contrasena);
       alert("Se registró correctamente.");
       router.push("/");
     } else {
+      alert("Correo electrónico ya registrado.");
       console.log("Ocurrió un error al registrarse.");
     }
   };
