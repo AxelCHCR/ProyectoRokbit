@@ -37,7 +37,9 @@ export default function Register() {
         .number({ invalid_type_error: "La edad es requerida" })
         .min(0, { message: "La edad no puede ser negativa" })
         .max(120, { message: "La edad máxima es 100" }),
-      rol: z.string().min(1, { message: "El rol es requerido" }),
+      rol: z.enum(["Interno", "Colaborador", "Cliente"], {
+        invalid_type_error: "Debe seleccionar una opción",
+      }),
     })
     .refine((data) => data.contrasena === data.confirmarContrasena, {
       message: "Las contraseñas deben coincidir",
@@ -183,12 +185,14 @@ export default function Register() {
                 )}
               </div>
               <div className="flex flex-col">
-                <Input
-                  type="text"
-                  placeholder="Rol"
+                <select
                   {...register("rol")}
-                  autoComplete="off"
-                />
+                  className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
+                >
+                  <option value="Cliente">Cliente</option>
+                  <option value="Interno">Interno</option>
+                  <option value="Colaborador">Colaborador</option>
+                </select>
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
                 )}

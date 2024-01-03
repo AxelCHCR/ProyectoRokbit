@@ -40,10 +40,10 @@ export default function Home() {
       <button onClick={profile}>See Profile</button>
       <button onClick={() => router.push("/pages/disponibility")}>Disponibility</button>
       <button onClick={() => router.push("/pages/notifications")}>Notifications</button>
-      {role === 'User' && ( // Validación del rol de Admin para mostrar el botón
+      {role === 'Colaborador' && ( // Validación del rol de Admin para mostrar el botón
         <button onClick={() => {
-          alert("User button clicked");
-        }}>User Button</button>
+          alert("Collaborator button clicked");
+        }}>Collaborator Button</button>
       )}
     </div></>
   );

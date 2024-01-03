@@ -27,7 +27,9 @@ export default function Register() {
     apellido: z.string({ invalid_type_error: "El apellido debe ser un texto" }),
     correo: z.string().email({ message: "Correo electrónico inválido" }),
     edad: z.number({ invalid_type_error: "La edad debe ser un número" }),
-    rol: z.string({ invalid_type_error: "El rol debe ser un texto" }),
+    rol: z.enum(["Interno", "Colaborador", "Cliente"], {
+      invalid_type_error: "Debe seleccionar una opción",
+    }),
   });
 
   const {
@@ -41,7 +43,7 @@ export default function Register() {
 
   const { user, resetPassword } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const response = await UserController.get("http://localhost:4000/api/getUser", { params: { email: user.email } });
@@ -154,12 +156,14 @@ export default function Register() {
                 )}
               </div>
               <div className="flex flex-col">
-                <Input
-                  type="text"
-                  placeholder="Rol"
+                <select
                   {...register("rol")}
-                  autoComplete="off"
-                />
+                  className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
+                >
+                  <option value="Cliente">Cliente</option>
+                  <option value="Interno">Interno</option>
+                  <option value="Colaborador">Colaborador</option>
+                </select>
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
                 )}
