@@ -1,11 +1,11 @@
 import axios from "axios";
 
-class AvailabilitiesController {
+class ConfigurationsController {
   async create(route: string, data: any) {
     try {
       const response = await axios.post(route, data);
       if (response && response.data) {
-				console.log("Informacion creada");
+        console.log("Informacion creada");
         return response.data;
       } else {
         console.log("No hay informacion");
@@ -28,8 +28,10 @@ class AvailabilitiesController {
   }
   async update(route: string, data: any) {
     try {
+      console.log("data", data);
       const response = await axios.put(route, data);
       console.log("Informacion actualizada");
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log("Error:", error);
@@ -38,4 +40,4 @@ class AvailabilitiesController {
   }
 }
 
-export default new AvailabilitiesController();
+export default new ConfigurationsController();
