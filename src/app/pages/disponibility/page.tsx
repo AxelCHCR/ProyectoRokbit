@@ -57,7 +57,7 @@ export default function Disponibility() {
     const daysOfWeek = Object.keys(data).filter(key => key !== 'notificaciones');
     const finalData = [{ ...daysOfWeek.reduce((acc, day) => ({ ...acc, [day]: data[day] }), {}) }];
     await ConfigurationsController.update("http://localhost:4000/api/availability", { email: user.email, availables: finalData });
-    await UserController.update("http://localhost:4000/api/userAvailability", { email: user.email, allowAvailability: notifications });
+    await UserController.updateConfiguration("http://localhost:4000/api/userAvailability", { email: user.email, allowAvailability: notifications });
   };
 
   useEffect(() => {

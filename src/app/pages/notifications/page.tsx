@@ -51,7 +51,7 @@ export default function notifications() {
   const submitData = async (data: FormData) => {
     let notifications = data["notificaciones"] === "si";
     await ConfigurationsController.update("http://localhost:4000/api/frequency", { email: user.email, frequency: data.horas });
-    await UserController.update("http://localhost:4000/api/userNotification", { email: user.email, allowNotifications: notifications });
+    await UserController.updateConfiguration("http://localhost:4000/api/userNotification", { email: user.email, allowNotifications: notifications });
   };
 
   return (
