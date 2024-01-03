@@ -1,6 +1,6 @@
 import axios from "axios";
 class UserController {
-    /*public name: string;
+  /*public name: string;
     public lastName: string;
     public email: string;
     public password: string;
@@ -15,37 +15,46 @@ class UserController {
         this.age = userInfo.edad;
         this.role = userInfo.rol;
     }*/
-    async register(route: string, data: any) {
-      try {
-        const response = await axios.post(route, data);
-        if (response && response.data) {
-          console.log('Éxito en el registro:', response.data);
-          return response.data;
-        } else {
-          console.log('El registro no fue exitoso. Respuesta vacía.');
-          return null;
-        }
-      } catch (error) {
-        console.log('Error durante el registro:', error);
-        throw error;
+  async register(route: string, data: any) {
+    try {
+      const response = await axios.post(route, data);
+      if (response && response.data) {
+        console.log("Éxito en el registro:", response.data);
+        return response.data;
+      } else {
+        console.log("El registro no fue exitoso. Respuesta vacía.");
+        return null;
       }
+    } catch (error) {
+      console.log("Error durante el registro:", error);
+      throw error;
     }
+  }
 
-    async get(route: string, email: any) {
-      try {
-        const response = await axios.get(route, email);
-        if (response && response.data) {
-          console.log('Get info:', response.data);
-          return response.data;
-        } else {
-          console.log('No hay informacion');
-          return null;
-        }
-      } catch (error) {
-        console.log('Error:', error);
-        throw error;
+  async get(route: string, email: any) {
+    try {
+      const response = await axios.get(route, email);
+      if (response && response.data) {
+        return response.data;
+      } else {
+        console.log("No hay informacion");
+        return null;
       }
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
     }
+  }
+
+  async getAvailable(route: string, email: any) {
+    try {
+      const response = await axios.get(route, email);
+      return response.data;
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
 
   /*public getData() {
         console.log(
