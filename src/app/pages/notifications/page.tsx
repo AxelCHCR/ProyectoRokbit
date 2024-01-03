@@ -5,7 +5,14 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
+
 import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+import UserController from "../../../../backend/controllers/UserController";
+import ConfigurationsController from "../../../../backend/controllers/ConfigurationsController";
+
 type FormData = {
   horas: number;
   notificaciones: string;
@@ -13,9 +20,10 @@ type FormData = {
 
 export default function notifications() {
   const {user} = useAuth();
+  const router = useRouter();
   const notificationsSchema: ZodType<FormData> = z.object({
     horas: z.number().min(1, { message: "Debe ser al menos 1 hora" }),
-    notificaciones: z.enum(["si", "no"], {
+    notificaciones: z.string({
       invalid_type_error: "Debe seleccionar una opción",
     }),
   });
@@ -24,13 +32,26 @@ export default function notifications() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(notificationsSchema),
   });
 
-  const submitData = (data: FormData) => {
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const response = await UserController.getNotified("http://localhost:4000/api/userNotification", { params: { email: user.email } });
+      let notifications = response === true ? "si" : "no";
+      setValue("notificaciones", notifications);
+      const hours = await ConfigurationsController.get("http://localhost:4000/api/frequency", { params: { email: user.email } });
+      setValue("horas", hours.frequency);
+    };
+    fetchData();
+  }, [setValue]);
 
-    console.log(user);
+  const submitData = async (data: FormData) => {
+    let notifications = data["notificaciones"] === "si";
+    await ConfigurationsController.update("http://localhost:4000/api/frequency", { email: user.email, frequency: data.horas });
+    await UserController.update("http://localhost:4000/api/userNotification", { email: user.email, allowNotifications: notifications });
   };
 
   return (
@@ -68,6 +89,7 @@ export default function notifications() {
             <Button
               text="Cancelar"
               className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray w-36 h-10"
+              onClick={() => router.push("/pages/dashboard")}
             />
             <Button
               text="Guadar cambios"
