@@ -12,12 +12,8 @@ const NotificationsSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    userId:{
+    userEmail:{
         type: String,
-        required: true,
-    },
-    frecuency:{ 
-        type: Number,
         required: true,
     }
 });

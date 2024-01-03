@@ -56,6 +56,17 @@ class UserController {
     }
   }
 
+  async getNotified(route: string, email: any) {
+    try {
+      const response = await axios.get(route, email);
+      console.log("Notificaciones obtenidas");
+      return response.data;
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
   async update(route: string, data: any) {
     try {
       const response = await axios.put(route, data);
