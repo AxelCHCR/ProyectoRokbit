@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/app/components/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,9 +7,14 @@ import { z } from "zod";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Input from "@/app/components/inputs";
+import { useRouter } from "next/navigation";
+
+import { useAuth } from "@/app/context/AuthContext";
+import UserController from "../../../../backend/controllers/UserController";
+import AvailabilitiesController from "../../../../backend/controllers/AvailabilitiesController";
 
 type FormData = {
-  notificaciones: "si" | "no";
+  notificaciones: string;
   lunes: boolean;
   martes: boolean;
   miercoles: boolean;
@@ -21,7 +26,7 @@ type FormData = {
 
 export default function Disponibility() {
   const disponibilitySchema = z.object({
-    notificaciones: z.enum(["si", "no"], {
+    notificaciones: z.string({
       invalid_type_error: "Debe seleccionar una opción",
     }),
     lunes: z.boolean().optional(),
@@ -37,18 +42,39 @@ export default function Disponibility() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(disponibilitySchema),
   });
+
+  const { user } = useAuth();
+  const router = useRouter();
 
   const submitData = (data: FormData) => {
     console.log(data);
   };
 
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+    const response = await UserController.getAvailable("http://localhost:4000/api/userAvailability", { params: { email: user.email } })
+    setValue('notificaciones', response ? "si" : "no");
+    const days = await AvailabilitiesController.get("http://localhost:4000/api/availability", { params: { email: user.email } });
+    const daysOfWeek = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+    daysOfWeek.forEach((day: string) => {
+        setValue(day, days.availables[0][day]);
+    });
+    };
+    fetchData();
+  }, [setValue]);
+
+  const watchValue = watch();
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div>
-        <h1 className="font-poppins font-bold text-4xl">Notificaciones</h1>
+        <h1 className="font-poppins font-bold text-4xl">Gestiona tu disponibilidad</h1>
         <h2 className="font-poppins font-light text-base mt-12">
           ¿Deseas recibir invitaciones a reuniones?
         </h2>
@@ -70,7 +96,7 @@ export default function Disponibility() {
             {["lunes", "martes", "miercoles", "jueves"].map((day) => (
               <FormControlLabel
                 key={day}
-                control={<Checkbox {...register(day)} />}
+                control={<Checkbox {...register(day as keyof FormData)} checked={!!watchValue[day as keyof FormData]} />}
                 label={day.charAt(0).toUpperCase() + day.slice(1)}
               />
             ))}
@@ -79,7 +105,7 @@ export default function Disponibility() {
             {["viernes", "sabado", "domingo"].map((day) => (
               <FormControlLabel
                 key={day}
-                control={<Checkbox {...register(day)} />}
+                control={<Checkbox {...register(day as keyof FormData)} checked={!!watchValue[day as keyof FormData]} />}
                 label={day.charAt(0).toUpperCase() + day.slice(1)}
                 className=""
               />
@@ -90,6 +116,7 @@ export default function Disponibility() {
             <Button
               text="Cancelar"
               className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray w-36 h-10"
+              onClick={() => router.push("/pages/dashboard")}
             />
             <Button
               text="Guardar cambios"
