@@ -37,7 +37,9 @@ export default function Register() {
         .number({ invalid_type_error: "La edad es requerida" })
         .min(0, { message: "La edad no puede ser negativa" })
         .max(120, { message: "La edad máxima es 100" }),
-      rol: z.string().min(1, { message: "El rol es requerido" }),
+      rol: z.enum(["Interno", "Colaborador", "Cliente"], {
+        invalid_type_error: "Debe seleccionar una opción",
+      }),
     })
     .refine((data) => data.contrasena === data.confirmarContrasena, {
       message: "Las contraseñas deben coincidir",
@@ -66,28 +68,28 @@ export default function Register() {
       name: data.nombre,
       lastName: data.apellido,
       email: data.correo,
-      password: data.contrasena,
       age: data.edad,
       role: data.rol,
     };
-    console.log("otra data: ", parsedData);
+    // console.log("otra data: ", parsedData);
     const response = await userController.register(
       "http://localhost:4000/api/users",
       parsedData
     );
-    await ConfigurationsController.create(
-      "http://localhost:4000/api/availability",
-      { email: parsedData.email }
-    )
-    await ConfigurationsController.create(
-      "http://localhost:4000/api/frequency",
-      { email: parsedData.email }
-    )
     if (response) {
-      await signup(parsedData.email, parsedData.password);
+      await ConfigurationsController.create(
+        "http://localhost:4000/api/availability",
+        { email: parsedData.email }
+      )
+      await ConfigurationsController.create(
+        "http://localhost:4000/api/frequency",
+        { email: parsedData.email }
+      )
+      await signup(parsedData.email, data.contrasena);
       alert("Se registró correctamente.");
       router.push("/");
     } else {
+      alert("Correo electrónico ya registrado.");
       console.log("Ocurrió un error al registrarse.");
     }
   };
@@ -183,12 +185,14 @@ export default function Register() {
                 )}
               </div>
               <div className="flex flex-col">
-                <Input
-                  type="text"
-                  placeholder="Rol"
+                <select
                   {...register("rol")}
-                  autoComplete="off"
-                />
+                  className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
+                >
+                  <option value="Cliente">Cliente</option>
+                  <option value="Interno">Interno</option>
+                  <option value="Colaborador">Colaborador</option>
+                </select>
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
                 )}

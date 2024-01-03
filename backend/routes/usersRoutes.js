@@ -5,14 +5,18 @@ const database = Database.getInstance();
 
 const router = express.Router();
 
-//Register an user
 router.post("/users", async (req, res) => {
   await database.connect();
+  // Verifying if the email already exists in the database
+  const existingUser = await userSchema.findOne({ email: req.body.email });
+  if (existingUser) {
+    return res.status(400).json({ message: "Email already exists" });
+  }
   const user = userSchema(req.body);
   user
     .save()
     .then((data) => res.json(data))
-    .catch((error) => res.send({ message: error }));
+    .catch((error) => res.status(500).send({ message: error }));
 });
 router.get("/getUser", async (req, res) => {
   await database.connect();

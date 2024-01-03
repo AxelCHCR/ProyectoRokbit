@@ -1,33 +1,25 @@
 import axios from "axios";
 class UserController {
-  /*public name: string;
-    public lastName: string;
-    public email: string;
-    public password: string;
-    public age: string;
-    public role: string;*/
-  //Make the constructor method
-  /*constructor(userInfo: any) {
-        this.name = userInfo.nombre;
-        this.lastName = userInfo.apellido;
-        this.email = userInfo.correo;
-        this.password = userInfo.contrasena;
-        this.age = userInfo.edad;
-        this.role = userInfo.rol;
-    }*/
   async register(route: string, data: any) {
     try {
       const response = await axios.post(route, data);
-      if (response && response.data) {
+      console.log(response);
+      if (response && response.status === 200) {
         console.log("Éxito en el registro:", response.data);
         return response.data;
       } else {
-        console.log("El registro no fue exitoso. Respuesta vacía.");
+        console.log("El registro no fue exitoso. Respuesta vacía o estado incorrecto.");
         return null;
       }
-    } catch (error) {
-      console.log("Error durante el registro:", error);
-      throw error;
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        console.log("El email ya existe en la base de datos");
+        return null;
+      } else {
+        console.log("Error durante el registro:", error);
+        // Manejar otros errores que no sean específicos de un email existente
+        throw error;
+      }
     }
   }
 
@@ -89,24 +81,5 @@ class UserController {
       throw error;
     }
   }
-
-  /*public getData() {
-        console.log(
-            this.name,
-            this.lastName,
-            this.email,
-            this.password,
-            this.age,
-            this.role
-        )
-        return {
-            name: this.name,
-            lastName: this.lastName,
-            email: this.email,
-            password: this.password,
-            age: this.age,
-            role: this.role
-        }
-    }*/
 }
 export default new UserController();

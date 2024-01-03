@@ -27,7 +27,9 @@ export default function Register() {
     apellido: z.string({ invalid_type_error: "El apellido debe ser un texto" }),
     correo: z.string().email({ message: "Correo electrónico inválido" }),
     edad: z.number({ invalid_type_error: "La edad debe ser un número" }),
-    rol: z.string({ invalid_type_error: "El rol debe ser un texto" }),
+    rol: z.enum(["Interno", "Colaborador", "Cliente"], {
+      invalid_type_error: "Debe seleccionar una opción",
+    }),
   });
 
   const {
@@ -39,15 +41,16 @@ export default function Register() {
     resolver: zodResolver(profileSchema),
   });
 
-  const { user, resetPassword, emailReset } = useAuth();
+  const { user, resetPassword } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const response = await UserController.get("http://localhost:4000/api/getUser", { params: { email: user.email } });
+      // await UserController.updateEmail("http://localhost:4000/api/userEmail", { email: response.email, newEmail: user.email })
       setValue("nombre", response.name);
       setValue("apellido", response.lastName);
-      setValue("correo", response.email);
+      setValue("correo", user.email);
       setValue("edad", response.age);
       setValue("rol", response.role);
     };
@@ -81,7 +84,7 @@ export default function Register() {
     const response = await UserController.update("http://localhost:4000/api/users", {
       name: data.nombre,
       lastName: data.apellido,
-      email: data.correo,
+      email: user.email,
       age: data.edad,
       role: data.rol,
     });
@@ -89,17 +92,6 @@ export default function Register() {
       // alert("Perfil actualizado");
       console.log("Perfil actualizado");
       // router.push("/pages/dashboard");
-    }
-    if (data.correo !== user.email) {
-      try {
-        const response = await emailReset(data.correo);
-        if (response === true) {
-          alert("Revisa tu correo electrónico");
-          // router.push("/pages/dashboard");
-        }
-      } catch (error) {
-        console.log(error);
-      }
     }
   };
 
@@ -150,18 +142,6 @@ export default function Register() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col">
-              <Input
-                type="email"
-                placeholder="Correo electrónico"
-                className="w-[20.25rem]"
-                {...register("correo")}
-                autoComplete="off"
-              />
-              {errors.correo && (
-                <span className="text-red-500">{errors.correo.message}</span>
-              )}
-            </div>
             <div className="flex">
               <div className="flex flex-col mr-1">
                 <Input
@@ -176,12 +156,14 @@ export default function Register() {
                 )}
               </div>
               <div className="flex flex-col">
-                <Input
-                  type="text"
-                  placeholder="Rol"
+                <select
                   {...register("rol")}
-                  autoComplete="off"
-                />
+                  className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
+                >
+                  <option value="Cliente">Cliente</option>
+                  <option value="Interno">Interno</option>
+                  <option value="Colaborador">Colaborador</option>
+                </select>
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
                 )}
