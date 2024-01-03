@@ -41,8 +41,7 @@ router.get("/userAvailability", async (req, res) => {
 });
 router.put("/userAvailabilityStatus", async (req, res) => {
   await database.connect();
-  const { email } = req.query;
-  const {allowAvailability} = req.body;
+  const { email, allowAvailability } = req.body;
 
   await userSchema.updateOne({email: email}, {$set: {allowAvailability}})
   .then((data) => res.json(data))

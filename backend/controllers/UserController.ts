@@ -56,6 +56,17 @@ class UserController {
     }
   }
 
+  async update(route: string, data: any) {
+    try {
+      const response = await axios.put(route, data);
+      console.log("Disponibilidad actualizada");
+      return response.data;
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
   /*public getData() {
         console.log(
             this.name,
