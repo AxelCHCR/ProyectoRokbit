@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
 
 import userController from "../../../../backend/controllers/UserController";
-import AvailabilitiesController from "../../../../backend/controllers/AvailabilitiesController";
+import ConfigurationsController from "../../../../backend/controllers/ConfigurationsController";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -75,8 +75,12 @@ export default function Register() {
       "http://localhost:4000/api/users",
       parsedData
     );
-    await AvailabilitiesController.create(
+    await ConfigurationsController.create(
       "http://localhost:4000/api/availability",
+      { email: parsedData.email }
+    )
+    await ConfigurationsController.create(
+      "http://localhost:4000/api/frequency",
       { email: parsedData.email }
     )
     if (response) {

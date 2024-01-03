@@ -33,6 +33,7 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<formData>({
     resolver: zodResolver(profileSchema),
@@ -40,30 +41,18 @@ export default function Register() {
 
   const { user, resetPassword, emailReset } = useAuth();
   const router = useRouter();
-
-  const [userData, setUserData] = useState<formData>(
-    {
-      nombre: "",
-      apellido: "",
-      correo: "",
-      edad: 0,
-      rol: "",
-    }
-  );
   
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const response = await UserController.get("http://localhost:4000/api/getUser", { params: { email: user.email } });
-      setUserData({
-        nombre: response.name,
-        apellido: response.lastName,
-        correo: response.email,
-        edad: response.age,
-        rol: response.role,
-      });
+      setValue("nombre", response.name);
+      setValue("apellido", response.lastName);
+      setValue("correo", response.email);
+      setValue("edad", response.age);
+      setValue("rol", response.role);
     };
     fetchData();
-  }, []);
+  }, [setValue]);
 
   const changePassword = async () => {
     try {
@@ -88,14 +77,25 @@ export default function Register() {
   };
 
   const submitData = async (data: formData) => {
-    console.log(data);
     // Aquí puedes manejar la subida de datos del formulario junto con la imagen de perfil
+    const response = await UserController.update("http://localhost:4000/api/users", {
+      name: data.nombre,
+      lastName: data.apellido,
+      email: data.correo,
+      age: data.edad,
+      role: data.rol,
+    });
+    if (response.result === true) {
+      // alert("Perfil actualizado");
+      console.log("Perfil actualizado");
+      // router.push("/pages/dashboard");
+    }
     if (data.correo !== user.email) {
       try {
         const response = await emailReset(data.correo);
         if (response === true) {
           alert("Revisa tu correo electrónico");
-          // router.push("/");
+          // router.push("/pages/dashboard");
         }
       } catch (error) {
         console.log(error);
@@ -132,7 +132,6 @@ export default function Register() {
                   placeholder="Nombre"
                   {...register("nombre")}
                   autoComplete="off"
-                  defaultValue={userData.nombre}
                 />
                 {errors.nombre && (
                   <span className="text-red-500">{errors.nombre.message}</span>
@@ -143,7 +142,6 @@ export default function Register() {
                   placeholder="Apellido"
                   {...register("apellido")}
                   autoComplete="off"
-                  defaultValue={userData.apellido}
                 />
                 {errors.apellido && (
                   <span className="text-red-500">
@@ -159,7 +157,6 @@ export default function Register() {
                 className="w-[20.25rem]"
                 {...register("correo")}
                 autoComplete="off"
-                defaultValue={userData.correo}
               />
               {errors.correo && (
                 <span className="text-red-500">{errors.correo.message}</span>
@@ -172,7 +169,6 @@ export default function Register() {
                   placeholder="Edad"
                   {...register("edad", { valueAsNumber: true })}
                   autoComplete="off"
-                  defaultValue={userData.edad}
                   min={1}
                 />
                 {errors.edad && (
@@ -185,7 +181,6 @@ export default function Register() {
                   placeholder="Rol"
                   {...register("rol")}
                   autoComplete="off"
-                  defaultValue={userData.rol}
                 />
                 {errors.rol && (
                   <span className="text-red-500">{errors.rol.message}</span>
