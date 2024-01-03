@@ -5,7 +5,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  verifyBeforeUpdateEmail,
   signOut,
 } from 'firebase/auth'
 import { auth } from "../../../config/firebase";
@@ -46,24 +45,13 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     return sendPasswordResetEmail(auth, email);
   };
 
-  const emailReset = async (email: string) => {
-    try {
-      if (auth.currentUser) {
-        await verifyBeforeUpdateEmail(auth.currentUser, email);
-      }
-      return true;
-    } catch (error: any) {
-      return error;
-    }
-  };
-
   const logout = async () => {
     setUser(null);
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signup, resetPassword, emailReset, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, resetPassword, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
