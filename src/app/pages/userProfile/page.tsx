@@ -202,6 +202,7 @@ export default function Register() {
             <Button
               text="Cancelar"
               className="bg-custom-light-gray hover:bg-custom-dark-gray text-gray-600 w-36 h-10"
+              onClick={() => router.push("/pages/dashboard")}
             />
             <Button
               text="Aceptar"
