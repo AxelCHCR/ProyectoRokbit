@@ -19,7 +19,7 @@ router.put("/userNotificationStatus/:id", async (req, res) => {
   const { id } = req.params;
   const {allowNotifications} = req.body;
 
-  userSchema.updateOne({_id: id}, {$set: {allowNotifications}})
+  await userSchema.updateOne({_id: id}, {$set: {allowNotifications}})
   .then((data) => res.json(data))
   .catch((error) => res.send({ message: error }));
 });
@@ -30,6 +30,23 @@ router.get("/getUser", async (req, res) => {
     .findOne({ email: email })
     .then((data) => res.json(data))
     .catch((error) => res.send({ message: error }));
+});
+router.get("/userAvailability", async (req, res) => {
+  await database.connect();
+  const { email } = req.query;
+  userSchema
+    .findOne({ email: email })
+    .then((data) => res.json(data.allowAvailability))
+    .catch((error) => res.send({ message: error }));
+});
+router.put("/userAvailabilityStatus", async (req, res) => {
+  await database.connect();
+  const { email } = req.query;
+  const {allowAvailability} = req.body;
+
+  await userSchema.updateOne({email: email}, {$set: {allowAvailability}})
+  .then((data) => res.json(data))
+  .catch((error) => res.send({ message: error }));
 });
 
 module.exports = router;

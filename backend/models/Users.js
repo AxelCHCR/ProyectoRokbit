@@ -26,7 +26,13 @@ const usersSchema = mongoose.Schema({
     },
     allowNotifications:{
         type: Boolean,
-        required: false
+        required: false,
+        default: false
+    },
+    allowAvailability:{
+        type: Boolean,
+        required: false,
+        default: false
     },
 
 });
