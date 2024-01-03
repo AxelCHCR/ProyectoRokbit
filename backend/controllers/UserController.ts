@@ -35,11 +35,23 @@ class UserController {
     try {
       const response = await axios.get(route, email);
       if (response && response.data) {
+        console.log("Informacion obtenida");
         return response.data;
       } else {
         console.log("No hay informacion");
         return null;
       }
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
+
+  async update(route: string, data: any) {
+    try {
+      const response = await axios.put(route, data);
+      console.log("Informacion del perfil actualizada");
+      return response.data;
     } catch (error) {
       console.log("Error:", error);
       throw error;
@@ -67,7 +79,7 @@ class UserController {
     }
   }
 
-  async update(route: string, data: any) {
+  async updateConfiguration(route: string, data: any) {
     try {
       const response = await axios.put(route, data);
       console.log("Disponibilidad actualizada");
