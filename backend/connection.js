@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/usersRoutes");
+const availablesRoutes = require("./routes/availabilitiesRoutes");
 
 dotenv.config();
 const portDefault = 4000;
@@ -19,6 +20,7 @@ app.use(
 // Middlewares
 app.use(express.json());
 app.use("/api", userRoutes);
+app.use("/api", availablesRoutes);
 
 app.get("/", (req, res) => {
   res.send("API for Colibrí, a Rokbit Project");
