@@ -26,6 +26,16 @@ class AvailabilitiesController {
       throw error;
     }
   }
+  async update(route: string, data: any) {
+    try {
+      const response = await axios.put(route, data);
+      console.log("Informacion actualizada");
+      return response.data;
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
+    }
+  }
 }
 
 export default new AvailabilitiesController();

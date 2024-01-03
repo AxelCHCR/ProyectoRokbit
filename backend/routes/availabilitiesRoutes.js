@@ -23,8 +23,7 @@ router.get("/availability", async (req, res) => {
 });
 router.put("/availability", async (req, res) => {
     await database.connect();
-    const { email } = req.query;
-    const { availables } = req.body;
+    const { email, availables } = req.body;
 
     availabilitySchema
         .findOneAndUpdate(
