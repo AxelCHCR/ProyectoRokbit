@@ -24,22 +24,17 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-  }
-  const profile = async () => {
-    try {
-      router.push("/pages/userProfile");
-    } catch (error) {
-      console.log(error);
-    }
   };
   
   return (
     <><div>Main page</div>
     <div className='flex space-x-4'>
       <button onClick={handleSignOut}>Sign out</button>
-      <button onClick={profile}>See Profile</button>
+      <button onClick={() => router.push("/pages/userProfile")}>See Profile</button>
       <button onClick={() => router.push("/pages/disponibility")}>Disponibility</button>
       <button onClick={() => router.push("/pages/notifications")}>Notifications</button>
+      <button onClick={() => router.push("/pages/createMeeting")}>Create Meeting</button>
+      <button onClick={() => router.push("/pages/changeMeeting")}>Change Meeting</button>
       {role === 'Colaborador' && ( // Validación del rol de Admin para mostrar el botón
         <button onClick={() => {
           alert("Collaborator button clicked");
