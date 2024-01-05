@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
-const { type } = require("os");
 const meetingsSchema = mongoose.Schema({
     name:{
         type:String,
         required:true,
     },
-    description:{
-        type: String, 
+    date:{
+        type: String,
         required: true,
     },
-    date:{
+    type:{
         type: String,
         required: true,
     },
@@ -20,10 +19,15 @@ const meetingsSchema = mongoose.Schema({
     endTime:{
         type: String,
         required: true,
-
     },
     status:{
         type: String,
+        required: false,
+        default: 'Pending',
+        // 'Pending', 'Cancelled', 'Completed'
+    },
+    recurrence:{
+        type: Boolean,
         required: true,
     },
     priority:{
@@ -32,7 +36,8 @@ const meetingsSchema = mongoose.Schema({
     },
     document:{
         type: String,
-        required: true,
+        required: false,
+        default: 'No Document',
     }
 });
 module.exports = mongoose.model("Meetings", meetingsSchema);
