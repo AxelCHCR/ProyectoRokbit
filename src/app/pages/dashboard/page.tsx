@@ -35,6 +35,7 @@ export default function Home() {
       <button onClick={() => router.push("/pages/notifications")}>Notifications</button>
       <button onClick={() => router.push("/pages/createMeeting")}>Create Meeting</button>
       <button onClick={() => router.push("/pages/changeMeeting")}>Change Meeting</button>
+      <button onClick={() => router.push("/pages/principalCalendar")}>Calendar</button>
       {role === 'Colaborador' && ( // Validación del rol de Admin para mostrar el botón
         <button onClick={() => {
           alert("Collaborator button clicked");
