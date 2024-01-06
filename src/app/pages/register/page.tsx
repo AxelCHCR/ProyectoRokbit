@@ -80,11 +80,11 @@ export default function Register() {
       await ConfigurationsController.create(
         "http://localhost:4000/api/availability",
         { email: parsedData.email }
-      )
+      );
       await ConfigurationsController.create(
         "http://localhost:4000/api/frequency",
         { email: parsedData.email }
-      )
+      );
       await signup(parsedData.email, data.contrasena);
       alert("Se registró correctamente.");
       router.push("/");
@@ -189,6 +189,7 @@ export default function Register() {
                   {...register("rol")}
                   className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
                 >
+                  <option disabled>Rol</option>
                   <option value="Cliente">Cliente</option>
                   <option value="Interno">Interno</option>
                   <option value="Colaborador">Colaborador</option>
