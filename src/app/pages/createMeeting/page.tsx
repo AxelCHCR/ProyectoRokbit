@@ -10,14 +10,19 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Popup from "@/app/components/popups/popups";
+import MeetingController from "../../../../backend/controllers/MeetingController";
+
 type MeetingFormData = {
-  titulo: string;
-  tipo: string;
-  horaInicio: string;
-  horaFin: string;
-  prioridad: string;
-  esRecurrente: string;
-  fechaReunion: Date;
+  name: string;
+  type: string;
+  startTime: string;
+  endTime: string;
+  priority: string;
+  recurrence: string;
+  date: Date;
 };
 
 const timeFormatRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -34,27 +39,27 @@ const convertTimeToMinutes = (time: any) => {
 
 const meetingSchema = z
   .object({
-    titulo: z.string().min(1, { message: "El título es requerido" }),
-    tipo: z.enum(["interna", "externa"], {
+    name: z.string().min(1, { message: "El título es requerido" }),
+    type: z.enum(["Interna", "Externa"], {
       invalid_type_error: "Debe seleccionar una opción",
     }),
-    horaInicio: validateTimeFormat,
-    horaFin: validateTimeFormat,
-    prioridad: z.enum(["alta", "medio", "baja"], {
+    startTime: validateTimeFormat,
+    endTime: validateTimeFormat,
+    priority: z.enum(["Alta", "Medio", "Baja"], {
       invalid_type_error: "Debe seleccionar una opción",
     }),
-    esRecurrente: z.enum(["si", "no"], {
+    recurrence: z.enum(["si", "no"], {
       invalid_type_error: "Debe seleccionar una opción",
     }),
   })
-  .refine((data) => data.horaInicio !== data.horaFin, {
+  .refine((data) => data.startTime !== data.endTime, {
     message: "La hora de inicio y fin no pueden ser iguales",
-    path: ["horaFin"],
+    path: ["endTime"],
   })
   .refine(
     (data) => {
-      const inicioEnMinutos = convertTimeToMinutes(data.horaInicio);
-      const finEnMinutos = convertTimeToMinutes(data.horaFin);
+      const inicioEnMinutos = convertTimeToMinutes(data.startTime);
+      const finEnMinutos = convertTimeToMinutes(data.endTime);
       return inicioEnMinutos <= finEnMinutos;
     },
     {
@@ -74,17 +79,18 @@ export default function createMeeting() {
     resolver: zodResolver(meetingSchema),
   });
 
-  const submitMeetingData = (data: MeetingFormData) => {
+  const submitMeetingData = async (data: MeetingFormData) => {
     const formattedDate = selectedDate
       ? selectedDate.format("YYYY-MM-DD")
       : null;
 
     const fullData = {
       ...data,
-      fechaReunion: formattedDate,
+      recurrence: data.recurrence === "si" ? true : false,
+      date: formattedDate,
     };
-
     console.log("Datos completos de la reunión: ", fullData);
+    await MeetingController.create("http://localhost:4000/api/meetings", fullData);
   };
   return (
     <div className="flex items-center justify-center h-screen">
@@ -93,67 +99,67 @@ export default function createMeeting() {
         <form onSubmit={handleSubmit(submitMeetingData)}>
           <div className="flex mt-4">
             <div className="flex flex-col mt-2 space-y-1">
-              <Input placeholder="Título" {...register("titulo")} />
-              {errors.titulo && (
-                <span className="text-red-500">{errors.titulo.message}</span>
+              <Input placeholder="Título" {...register("name")} />
+              {errors.name && (
+                <span className="text-red-500">{errors.name.message}</span>
               )}
 
               <select
-                {...register("tipo")}
+                {...register("type")}
                 className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
               >
                 <option disabled>Tipo</option>
-                <option value="interna">Reunión interna</option>
-                <option value="externa">Reunión externa</option>
+                <option value="Interna">Reunión interna</option>
+                <option value="Externa">Reunión externa</option>
               </select>
-              {errors.tipo && (
-                <span className="text-red-500">{errors.tipo.message}</span>
+              {errors.type && (
+                <span className="text-red-500">{errors.type.message}</span>
               )}
 
               <Input
                 type="time"
                 placeholder="Hora de inicio"
-                {...register("horaInicio")}
+                {...register("startTime")}
               />
-              {errors.horaInicio && (
+              {errors.startTime && (
                 <span className="text-red-500">
-                  {errors.horaInicio.message}
+                  {errors.startTime.message}
                 </span>
               )}
 
               <Input
                 type="time"
                 placeholder="Hora de fin"
-                {...register("horaFin")}
+                {...register("endTime")}
               />
-              {errors.horaFin && (
-                <span className="text-red-500">{errors.horaFin.message}</span>
+              {errors.endTime && (
+                <span className="text-red-500">{errors.endTime.message}</span>
               )}
 
               <select
-                {...register("prioridad")}
+                {...register("priority")}
                 className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
               >
                 <option disabled>Prioridad</option>
-                <option value="alta">Alta</option>
-                <option value="medio">Media</option>
-                <option value="baja">Baja</option>
+                <option value="Alta">Alta</option>
+                <option value="Medio">Media</option>
+                <option value="Baja">Baja</option>
               </select>
-              {errors.prioridad && (
-                <span className="text-red-500">{errors.prioridad.message}</span>
+              {errors.priority && (
+                <span className="text-red-500">{errors.priority.message}</span>
               )}
 
               <select
-                {...register("esRecurrente")}
+                {...register("recurrence")}
                 className="border border-dark-gray focus:outline-none rounded-lg bg-custom-gray w-40 h-12 font-poppins font-light px-4"
               >
                 <option disabled>¿Es recurrente?</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
               </select>
-              {errors.esRecurrente && (
+              {errors.recurrence && (
                 <span className="text-red-500">
-                  {errors.esRecurrente.message}
+                  {errors.recurrence.message}
                 </span>
               )}
             </div>
@@ -171,7 +177,7 @@ export default function createMeeting() {
               </div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
-                  name="fechaReunion"
+                  name="date"
                   control={control}
                   render={({ field }) => (
                     <DateCalendar
