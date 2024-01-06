@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import Button from "@/app/components/button";
 import Input from "@/app/components/inputs";
-import dayjs from "dayjs";
-
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -66,7 +64,7 @@ const meetingSchema = z
   );
 
 export default function createMeeting() {
-  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [selectedDate, setSelectedDate] = useState(null);
   const {
     register,
     handleSubmit,
@@ -181,6 +179,7 @@ export default function createMeeting() {
                       value={selectedDate}
                       onChange={(newValue) => {
                         field.onChange(newValue);
+                        setSelectedDate(newValue);
                       }}
                     />
                   )}
