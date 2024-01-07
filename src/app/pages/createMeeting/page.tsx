@@ -79,6 +79,8 @@ export default function createMeeting() {
     resolver: zodResolver(meetingSchema),
   });
 
+  const { user } = useAuth();
+
   const submitMeetingData = async (data: MeetingFormData) => {
     const formattedDate = selectedDate
       ? selectedDate.format("YYYY-MM-DD")
@@ -87,6 +89,7 @@ export default function createMeeting() {
     const fullData = {
       ...data,
       recurrence: data.recurrence === "si" ? true : false,
+      owner: user.email,
       date: formattedDate,
     };
     console.log("Datos completos de la reunión: ", fullData);
