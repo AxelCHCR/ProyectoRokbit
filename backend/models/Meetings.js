@@ -34,6 +34,10 @@ const meetingsSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    owner:{
+        type: String,
+        required: true,
+    },
     document:{
         type: String,
         required: false,
