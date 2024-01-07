@@ -81,6 +81,16 @@ export default function createMeeting() {
 
   const { user } = useAuth();
 
+  const submitDocument = () => {
+    console.log("Subiendo documento: ");
+  };
+
+  const submitTemplate = () => {
+    console.log("Subiendo plantilla: ");
+  };
+
+  const router = useRouter();
+
   const submitMeetingData = async (data: MeetingFormData) => {
     const formattedDate = selectedDate
       ? selectedDate.format("YYYY-MM-DD")
@@ -172,10 +182,14 @@ export default function createMeeting() {
                 <Button
                   className="w-36 h-10 text-white mr-4 text-xs"
                   text="Subir documento"
+                  type="button"
+                  onClick={submitDocument}
                 />
                 <Button
                   className="w-36 h-10 text-white text-xs"
                   text="Utilizar plantilla"
+                  type="button"
+                  onClick={submitTemplate}
                 />
               </div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -201,6 +215,8 @@ export default function createMeeting() {
             <Button
               text="Cancelar"
               className="bg-custom-light-gray text-gray-700 hover:bg-custom-dark-gray w-36 h-10"
+              type="button"
+              onClick={() => router.push("/pages/dashboard")}
             />
             <Button
               text="Crear"
