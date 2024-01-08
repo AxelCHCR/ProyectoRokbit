@@ -5,6 +5,7 @@ import Input from "@/app/components/inputs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
+import { subYears, isAfter, isBefore } from 'date-fns';
 
 import userController from "../../../../backend/controllers/UserController";
 import ConfigurationsController from "../../../../backend/controllers/ConfigurationsController";
@@ -17,7 +18,7 @@ type formData = {
   correo: string;
   contrasena: string;
   confirmarContrasena: string;
-  edad: number;
+  fechaNacimiento: string;
   rol: string;
 };
 
@@ -33,10 +34,16 @@ export default function Register() {
       confirmarContrasena: z
         .string()
         .min(8, { message: "La confirmación de contraseña es requerida" }),
-      edad: z
-        .number({ invalid_type_error: "La edad es requerida" })
-        .min(0, { message: "La edad no puede ser negativa" })
-        .max(120, { message: "La edad máxima es 100" }),
+        fechaNacimiento: z
+        .string()
+        .refine((dateString) => {
+          const parsedDate = new Date(dateString);
+          const minDate = subYears(new Date(), 100); // Hace 100 años desde la fecha actual
+          const maxDate = subYears(new Date(), 15); // Hace 15 años desde la fecha actual
+          return isAfter(parsedDate, minDate) && isBefore(parsedDate, maxDate);
+        }, {
+          message: "La fecha de nacimiento no es válida",
+        }),
       rol: z.enum(["Interno", "Colaborador", "Cliente"], {
         invalid_type_error: "Debe seleccionar una opción",
       }),
@@ -68,10 +75,9 @@ export default function Register() {
       name: data.nombre,
       lastName: data.apellido,
       email: data.correo,
-      age: data.edad,
+      birthDate: data.fechaNacimiento,
       role: data.rol,
     };
-    // console.log("otra data: ", parsedData);
     const response = await userController.register(
       "http://localhost:4000/api/users",
       parsedData
@@ -174,14 +180,14 @@ export default function Register() {
             <div className="flex">
               <div className="flex flex-col mr-1">
                 <Input
-                  type="number"
-                  placeholder="Edad"
-                  {...register("edad", { valueAsNumber: true })}
+                  type="date"
+                  placeholder="Fecha de nacimiento"
+                  {...register("fechaNacimiento")}
                   autoComplete="off"
                   min={1}
                 />
-                {errors.edad && (
-                  <span className="text-red-500">{errors.edad.message}</span>
+                {errors.fechaNacimiento && (
+                  <span className="text-red-500">{errors.fechaNacimiento.message}</span>
                 )}
               </div>
               <div className="flex flex-col">
